@@ -1,14 +1,10 @@
 <?php
 
-  include_once(realpath(__DIR__, 1).'/inc.inc.connect.php');
+  include_once(dirname(__DIR__, 1).DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'inc.connect.php');
 
   class MySql{
 
     private $conn;
-
-    public function __construct(){
-      $this->connect();
-    }
 
     public function connect(){
       

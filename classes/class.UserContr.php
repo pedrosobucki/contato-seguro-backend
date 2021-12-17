@@ -1,6 +1,6 @@
 <?php
 
-  require_once(__DIR__.'/class.MySql.php');
+  require_once(__DIR__.DIRECTORY_SEPARATOR.'class.MySql.php');
 
   class UserContr{
     
@@ -8,7 +8,7 @@
 
     public function __construct(){
       $database = new MySql();
-      $this->mysql = $database->conn;
+      $this->mysql = $database->connect();
     }
 
     public function insertUser($data){
@@ -19,13 +19,13 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->affected_rows;
+      return $stmt->rowCount();
 
     }
 
     public function getUser($id_user){
 
-      $query = '  SELECT  *,
+      $query = '  SELECT  *
                   FROM    user
                   WHERE   id_user = "'.$id_user.'"';
 
@@ -34,6 +34,34 @@
 
       return $stmt->fetch(PDO::FETCH_ASSOC);
       
+    }
+
+    public function updateUser($id_user, $data){
+
+      foreach ($data as $key => $value) {
+        $values[] = $key.' = "'.$value.'"';
+      }
+
+      $query = 'UPDATE user
+                SET '.implode(', ', $values).'
+                WHERE id_user = "'.$id_user.'"';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      return $stmt->rowCount();
+    }
+
+    public function deleteUser($id_user){
+
+      $query = 'UPDATE user
+                SET show = 0
+                WHERE id_user = "'.$id_user.'"';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      return $stmt->rowCount();
     }
 
   }
