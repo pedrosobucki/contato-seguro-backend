@@ -13,8 +13,14 @@
 
     public function getCompany($id_company){
 
-      $query = '  SELECT *
-                  FROM company
+      $query = '  SELECT  company.id_company,
+                          company.cnpj,
+                          company.show,
+                          adress.*
+
+                  FROM company LEFT JOIN adress
+                  ON company.id_adress = adress.id_adress
+
                   WHERE company.id_company = "'.$id_company.'"';
 
       $stmt = $this->mysql->prepare($query);
@@ -26,8 +32,14 @@
 
     public function getAllCompanies(){
 
-      $query = '  SELECT *
-                  FROM company
+      $query = '  SELECT  company.id_company,
+                          company.cnpj,
+                          company.show,
+                          adress.*
+
+                  FROM company LEFT JOIN adress
+                  ON company.id_adress = adress.id_adress
+
                   WHERE company.show = 1';
 
       $stmt = $this->mysql->prepare($query);
@@ -61,6 +73,38 @@
 
       return ($adressCreated && $companyCreated) ? true : false;
       
+    }
+
+    public function updateCompany($id_company, $companyData, $adressData){
+
+      foreach ($companyData as $key => $value) {
+        $companyValues[] = $key.' = "'.$value.'"';
+      }
+
+      foreach ($adressData as $key => $value) {
+        $adressValues[] = $key.' = "'.$value.'"';
+      }
+
+      $query = 'UPDATE company
+                SET '.implode(', ', $companyValues).'
+                WHERE company.id_company = "'.$companyValues.'"';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      $companyUpdated = ($stmt->rowCount() > 0) ? true : false;
+
+      $query = 'UPDATE adress
+                SET '.implode(', ', $adressValues).'
+                WHERE company.id_company = "'.$adressValues.'"';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      $adressUpdated = ($stmt->rowCount() > 0) ? true : false;
+
+      return ($adressUpdated && $companyUpdated) ? true : false;
+
     }
 
   }
