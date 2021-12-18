@@ -91,6 +91,24 @@
     return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
   });
 
+
+  $app->delete('/api/user/{id}/delete', function(Request $request, Response $response, array $args){
+    
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->deleteUser($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
   try{
     @$app->run();
   }catch(Exception $e){

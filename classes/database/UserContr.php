@@ -92,13 +92,19 @@
     public function deleteUser($id_user){
 
       $query = 'UPDATE user
-                SET show = 0
+                SET user.show = 0
                 WHERE user.id_user = "'.$id_user.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      if($stmt->rowCount() > 0){
+        $response = DELETE_SUCCEDED;
+      }else{
+        $response = DELETE_FAILED;
+      }
+
+      return $response;
     }
 
   }
