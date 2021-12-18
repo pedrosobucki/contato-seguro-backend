@@ -7,7 +7,8 @@ if($_SERVER['HTTP_HOST'] === 'localhost'){
 }
 
   define(DS, DIRECTORY_SEPARATOR);
-  define(DIR_APP, 'contato_seguro');
+  define(DIR_APP, __DIR__);
+  define(DIR_PROJECT, 'contato_seguro');
 
   if(file_exists('autoload.php')){
     include('autoload.php');

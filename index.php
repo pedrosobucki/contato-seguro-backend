@@ -1,9 +1,17 @@
 <?php
 
+    use Validator\RequestValidator;
+    use util\RoutesUtil;
+
     include('bootstrap.php');
     echo 'index.php';
 
-    $userCtr = new UserContr();
-    print_r($userCtr->getUser(1));
+    try{
+        $validator = new RequestValidator(RoutesUtil::getRoutes());
+        $response = $validator->processRequest($request);
+
+    }catch(Exception $e){
+        echo $e->getMessage();
+    }
 
 ?>

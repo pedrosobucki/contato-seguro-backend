@@ -5,10 +5,8 @@
  */
   function autoload($class){
 
-    $baseDir = __DIR__ . DS;
+    $baseDir = DIR_APP . DS;
     $class = $baseDir . 'classes' . DS . str_replace('\\', DS, $class) . '.php';
-
-    var_dump($class);
 
     if (file_exists($class) && !is_dir($class)) {
         include $class;
