@@ -6,12 +6,13 @@ if($_SERVER['HTTP_HOST'] === 'localhost'){
   error_reporting('E_ERROR');
 }
 
-  define(DS, DIRECTORY_SEPARATOR);
-  define(DIR_APP, __DIR__);
-  define(DIR_PROJECT, 'contato_seguro');
+  const DS = DIRECTORY_SEPARATOR;
+  const DIR_APP = __DIR__;
+  const DIR_PROJECT = 'contato_seguro';
 
   if(file_exists('autoload.php')){
     include('autoload.php');
+    include DIR_PROJECT . DS . 'vendor/autoload.php';
   }else{
     echo 'Bootstrap loading error: '.error_get_last();
   }

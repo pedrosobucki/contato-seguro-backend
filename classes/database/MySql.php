@@ -1,6 +1,6 @@
 <?php
 
-  include_once(dirname(__DIR__, 1).DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'inc.connect.php');
+  include_once(dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'inc.connect.php');
 
   class MySql{
 

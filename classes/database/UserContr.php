@@ -1,5 +1,7 @@
 <?php
 
+  require_once 'Mysql.php';
+
   class UserContr{
     
     private $mysql;
@@ -31,6 +33,23 @@
       $stmt->execute();
 
       return $stmt->fetch(PDO::FETCH_ASSOC);
+      
+    }
+
+    public function getAllUsers(){
+
+      $query = '  SELECT  *
+                  FROM    user
+                  WHERE user.show = 1';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+        $users[] = $row;
+      }
+
+      return $users;
       
     }
 
