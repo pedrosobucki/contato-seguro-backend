@@ -48,6 +48,24 @@
 
   });
 
+  $app->post('/api/users/create', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    if(ValidateArgs::validateUserBody($body)){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->insertUser($body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
   try{
     @$app->run();
   }catch(Exception $e){

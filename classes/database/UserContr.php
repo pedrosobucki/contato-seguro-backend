@@ -13,13 +13,24 @@
 
     public function insertUser($data){
 
-      $query = 'INSERT INTO user ('.implode(', ', array_keys($data)).'),
+      unset($data['id_user']);
+
+      $query = 'INSERT INTO user ('.implode(', ', array_keys($data)).')
                 VALUES ("'.implode('", "', $data).'")';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return ($stmt->rowCount() > 0) ? $this->mysql->lastInsertId() : false;
+      if($stmt->rowCount() > 0){
+        $response = array(
+                          "status" => 200,
+                          "data" => array("id_user" => $this->mysql->lastInsertId())
+                        );
+      }else{
+        $response = NO_CONTENT;
+      }
+
+      return $response;
 
     }
 
