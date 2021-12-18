@@ -32,7 +32,16 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->fetch(PDO::FETCH_ASSOC);
+      if($stmt->rowCount() > 0){
+        $response = array(
+                          "status" => 200,
+                          "data" => $stmt->fetch(PDO::FETCH_ASSOC)
+                        );
+      }else{
+        $response = NO_CONTENT;
+      }
+
+      return $response;
       
     }
 

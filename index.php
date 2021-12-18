@@ -2,8 +2,10 @@
 
   @include __DIR__.'/bootstrap.php';
   require_once DIR_APP.'/vendor/autoload.php';
+  include __DIR__.'/inc/inc.codes.php';
 
   require_once 'classes/database/UserContr.php';
+  require_once 'classes/util/ValidateArgs.php';
   
   use Psr\Http\Message\ResponseInterface as Response;
   use Psr\Http\Message\ServerRequestInterface as Request;
@@ -19,11 +21,6 @@
   });
 
   $app->get('/api/users',function(Request $request, Response $response, array $args){
-    // $users = [
-    //   array("id" => 1, "name" => "user1"),
-    //   array("id" => 2, "name" => "user2"),
-    //   array("id" => 3, "name" => "user3"),
-    // ];
 
     $userCtr = new UserContr();
     $users = $userCtr->getAllUsers();
@@ -33,21 +30,26 @@
   });
 
   $app->get('/api/users/{id}', function(Request $request, Response $response, array $args){
-    $users = [
-      array("id" => 1, "name" => "user1"),
-      array("id" => 2, "name" => "user2"),
-      array("id" => 3, "name" => "user3"),
-    ];
 
-    $user = $users[$args['id']];
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->getUser($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+    
 
-    $response->getBody()->write(json_encode($user));
-    return $response->withHeader('Content-type', 'application/json');
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
 
   });
 
   try{
-    $app->run();
+    @$app->run();
   }catch(Exception $e){
       
   }
