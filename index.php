@@ -2,8 +2,10 @@
 
   @include __DIR__.'/bootstrap.php';
   require_once DIR_APP.'/vendor/autoload.php';
+  include __DIR__.'/inc/inc.codes.php';
 
   require_once 'classes/database/UserContr.php';
+  require_once 'classes/util/ValidateArgs.php';
   
   use Psr\Http\Message\ResponseInterface as Response;
   use Psr\Http\Message\ServerRequestInterface as Request;
@@ -18,12 +20,8 @@
     return $response;
   });
 
-  $app->get('/api/users',function(Request $request, Response $response, array $args){
-    // $users = [
-    //   array("id" => 1, "name" => "user1"),
-    //   array("id" => 2, "name" => "user2"),
-    //   array("id" => 3, "name" => "user3"),
-    // ];
+
+  $app->get('/api/user',function(Request $request, Response $response, array $args){
 
     $userCtr = new UserContr();
     $users = $userCtr->getAllUsers();
@@ -32,22 +30,87 @@
     return $response->withStatus(200)->withHeader('Content-type', 'application/json');
   });
 
-  $app->get('/api/users/{id}', function(Request $request, Response $response, array $args){
-    $users = [
-      array("id" => 1, "name" => "user1"),
-      array("id" => 2, "name" => "user2"),
-      array("id" => 3, "name" => "user3"),
-    ];
 
-    $user = $users[$args['id']];
+  $app->get('/api/user/{id}', function(Request $request, Response $response, array $args){
 
-    $response->getBody()->write(json_encode($user));
-    return $response->withHeader('Content-type', 'application/json');
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->getUser($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+    
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
 
   });
 
+
+  $app->post('/api/user/create', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    if(ValidateArgs::validateUserBody($body, ["name", "email"])){
+      echo 'data valid!';
+      die;
+
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->insertUser($body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+
+  $app->patch('/api/user/{id}/update', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    if(ValidateArgs::validateId($args['id']) && ValidateArgs::validateUserBody($body)){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->updateUser($args['id'], $body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+
+  $app->delete('/api/user/{id}/delete', function(Request $request, Response $response, array $args){
+    
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->deleteUser($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
   try{
-    $app->run();
+    @$app->run();
   }catch(Exception $e){
       
   }

@@ -15,7 +15,8 @@
           'mysql:host='.HOST.';
           dbname='.DB,
           USER,
-          PASS
+          PASS,
+          array(PDO::MYSQL_ATTR_FOUND_ROWS => true)
         );
 
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

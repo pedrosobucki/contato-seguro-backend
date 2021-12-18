@@ -13,13 +13,22 @@
 
     public function insertUser($data){
 
-      $query = 'INSERT INTO user ('.implode(', ', array_keys($data)).'),
+      $query = 'INSERT INTO user ('.implode(', ', array_keys($data)).')
                 VALUES ("'.implode('", "', $data).'")';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return ($stmt->rowCount() > 0) ? $this->mysql->lastInsertId() : false;
+      if($stmt->rowCount() > 0){
+        $response = array(
+                          "status" => 201,
+                          "data" => array("id_user" => $this->mysql->lastInsertId())
+                        );
+      }else{
+        $response = NO_CONTENT;
+      }
+
+      return $response;
 
     }
 
@@ -32,7 +41,16 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->fetch(PDO::FETCH_ASSOC);
+      if($stmt->rowCount() > 0){
+        $response = array(
+                          "status" => 200,
+                          "data" => $stmt->fetch(PDO::FETCH_ASSOC)
+                        );
+      }else{
+        $response = NO_CONTENT;
+      }
+
+      return $response;
       
     }
 
@@ -62,19 +80,31 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      if($stmt->rowCount() > 0){
+        $response = UPDATE_SUCCEDED;
+      }else{
+        $response = UPDATE_FAILED;
+      }
+
+      return $response;
     }
 
     public function deleteUser($id_user){
 
       $query = 'UPDATE user
-                SET show = 0
+                SET user.show = 0
                 WHERE user.id_user = "'.$id_user.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      if($stmt->rowCount() > 0){
+        $response = DELETE_SUCCEDED;
+      }else{
+        $response = DELETE_FAILED;
+      }
+
+      return $response;
     }
 
   }
