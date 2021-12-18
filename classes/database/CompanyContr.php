@@ -107,6 +107,19 @@
 
     }
 
+    public function deleteCompany($id_company){
+
+      $query = 'UPDATE company
+                SET show = 0
+                WHERE company.id_company = "'.$id_company.'"';
+
+      $stmt = $this->mysql0->prepare($query);
+      $stmt->execute();
+
+      return $stmt->rowCount();
+
+    }
+
   }
 
 ?>
