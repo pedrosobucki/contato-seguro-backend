@@ -19,7 +19,7 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      return ($stmt->rowCount() > 0) ? $this->mysql->lastInsertId() : false;
 
     }
 

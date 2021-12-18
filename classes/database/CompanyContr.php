@@ -50,60 +50,30 @@
 
     public function insertCompany($companyData, $adressData){
 
-      $query = 'INSERT INTO adress('.implode(', ', array_keys($adressData)).')
-                VALUES ("'.implode('", "', $adressData).'")';
+      $query = 'INSERT INTO company('.implode(', ', array_keys($companyData)).')
+                VALUES ("'.implode('", "', $companyData).'")';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      if($stmt->rowCount() > 0){
-        $adressCreated = true;
-        $companyData['id_adress'] = $this->mysql->lastInsertId();
-
-        $query = 'INSERT INTO company('.implode(', ', array_keys($companyData)).')
-                  VALUES ("'.implode('", "', $companyData).'")';
-
-        $stmt = $this->mysql->prepare($query);
-        $stmt->execute();
-
-        $companyCreated = ($stmt->rowCount() > 0) ? true : false;
-      }else{
-        $adressCreated = false;
-      }
-
-      return ($adressCreated && $companyCreated) ? true : false;
+      return ($stmt->rowCount() > 0) ? $this->mysql->lastInsertId() : false;
       
     }
 
-    public function updateCompany($id_company, $companyData, $adressData){
+    public function updateCompany($id_company, $data){
 
-      foreach ($companyData as $key => $value) {
-        $companyValues[] = $key.' = "'.$value.'"';
-      }
-
-      foreach ($adressData as $key => $value) {
-        $adressValues[] = $key.' = "'.$value.'"';
+      foreach ($data as $key => $value) {
+        $values[] = $key.' = "'.$value.'"';
       }
 
       $query = 'UPDATE company
-                SET '.implode(', ', $companyValues).'
-                WHERE company.id_company = "'.$companyValues.'"';
+                SET '.implode(', ', $data).'
+                WHERE company.id_company = "'.$id_company.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      $companyUpdated = ($stmt->rowCount() > 0) ? true : false;
-
-      $query = 'UPDATE adress
-                SET '.implode(', ', $adressValues).'
-                WHERE company.id_company = "'.$adressValues.'"';
-
-      $stmt = $this->mysql->prepare($query);
-      $stmt->execute();
-
-      $adressUpdated = ($stmt->rowCount() > 0) ? true : false;
-
-      return ($adressUpdated && $companyUpdated) ? true : false;
+      return ($stmt->rowCount() > 0) ? true : false;
 
     }
 
@@ -113,7 +83,7 @@
                 SET show = 0
                 WHERE company.id_company = "'.$id_company.'"';
 
-      $stmt = $this->mysql0->prepare($query);
+      $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
       return $stmt->rowCount();
