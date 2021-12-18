@@ -1,6 +1,6 @@
 <?php
 
-  const ALLOWED_USER_PARAMS = ["id_user", "name", "email", "telephone", "birth_date", "birth_city"];
+  const ALLOWED_USER_PARAMS = ["name", "email", "telephone", "birth_date", "birth_city"];
 
   class ValidateArgs{
 

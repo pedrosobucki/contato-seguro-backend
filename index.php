@@ -20,7 +20,8 @@
     return $response;
   });
 
-  $app->get('/api/users',function(Request $request, Response $response, array $args){
+
+  $app->get('/api/user',function(Request $request, Response $response, array $args){
 
     $userCtr = new UserContr();
     $users = $userCtr->getAllUsers();
@@ -29,7 +30,8 @@
     return $response->withStatus(200)->withHeader('Content-type', 'application/json');
   });
 
-  $app->get('/api/users/{id}', function(Request $request, Response $response, array $args){
+
+  $app->get('/api/user/{id}', function(Request $request, Response $response, array $args){
 
     if(ValidateArgs::validateId($args['id'])){
       try{
@@ -48,7 +50,8 @@
 
   });
 
-  $app->post('/api/users/create', function(Request $request, Response $response, array $args){
+
+  $app->post('/api/user/create', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
     if(ValidateArgs::validateUserBody($body)){
@@ -64,6 +67,26 @@
 
     $response->getBody()->write(json_encode($data['data']));
     return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+
+  $app->patch('/api/user/{id}/update', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    
+    // if(ValidateArgs::validateUserBody($body)){
+    //   try{
+    //     $userCtr = new UserContr();
+    //     $data = $userCtr->insertUser($body);
+    //   }catch(Exception $e){
+    //     $data = ERROR_GENERIC;
+    //   }
+    // }else{
+    //   $data = BAD_REQUEST;
+    // }
+
+    // $response->getBody()->write(json_encode($data['data']));
+    // return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
   });
 
   try{

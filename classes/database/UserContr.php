@@ -13,8 +13,6 @@
 
     public function insertUser($data){
 
-      unset($data['id_user']);
-
       $query = 'INSERT INTO user ('.implode(', ', array_keys($data)).')
                 VALUES ("'.implode('", "', $data).'")';
 
