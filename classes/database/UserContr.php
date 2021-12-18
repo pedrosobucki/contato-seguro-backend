@@ -21,7 +21,7 @@
 
       if($stmt->rowCount() > 0){
         $response = array(
-                          "status" => 200,
+                          "status" => 201,
                           "data" => array("id_user" => $this->mysql->lastInsertId())
                         );
       }else{
@@ -80,7 +80,13 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      if($stmt->rowCount() > 0){
+        $response = UPDATE_SUCCEDED;
+      }else{
+        $response = UPDATE_FAILED;
+      }
+
+      return $response;
     }
 
     public function deleteUser($id_user){

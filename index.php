@@ -54,7 +54,10 @@
   $app->post('/api/user/create', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    if(ValidateArgs::validateUserBody($body)){
+    if(ValidateArgs::validateUserBody($body, ["name", "email"])){
+      echo 'data valid!';
+      die;
+
       try{
         $userCtr = new UserContr();
         $data = $userCtr->insertUser($body);
@@ -73,20 +76,19 @@
   $app->patch('/api/user/{id}/update', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    
-    // if(ValidateArgs::validateUserBody($body)){
-    //   try{
-    //     $userCtr = new UserContr();
-    //     $data = $userCtr->insertUser($body);
-    //   }catch(Exception $e){
-    //     $data = ERROR_GENERIC;
-    //   }
-    // }else{
-    //   $data = BAD_REQUEST;
-    // }
+    if(ValidateArgs::validateId($args['id']) && ValidateArgs::validateUserBody($body)){
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->updateUser($args['id'], $body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
 
-    // $response->getBody()->write(json_encode($data['data']));
-    // return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
   });
 
   try{

@@ -16,9 +16,9 @@
 
     }
 
-    public static function validateUserBody($body){
+    public static function validateUserBody($body, $obligatoryParams = null){
 
-      if(isset($body['name']) && isset($body['email'])){
+      if(array_intersect($obligatoryParams, array_keys($body)) || $obligatoryParams === null){
 
         foreach($body as $key => $value){
           if(!in_array($key, ALLOWED_USER_PARAMS)) return false;
