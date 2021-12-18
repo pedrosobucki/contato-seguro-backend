@@ -45,11 +45,7 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-        $users[] = $row;
-      }
-
-      return $users;
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
       
     }
 
@@ -61,7 +57,7 @@
 
       $query = 'UPDATE user
                 SET '.implode(', ', $values).'
-                WHERE id_user = "'.$id_user.'"';
+                WHERE user.id_user = "'.$id_user.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
@@ -73,7 +69,7 @@
 
       $query = 'UPDATE user
                 SET show = 0
-                WHERE id_user = "'.$id_user.'"';
+                WHERE user.id_user = "'.$id_user.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
