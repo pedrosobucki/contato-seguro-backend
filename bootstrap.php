@@ -8,11 +8,10 @@ if($_SERVER['HTTP_HOST'] === 'localhost'){
 
   const DS = DIRECTORY_SEPARATOR;
   const DIR_APP = __DIR__;
-  const DIR_PROJECT = 'contato_seguro';
 
   if(file_exists('autoload.php')){
     include('autoload.php');
-    include DIR_PROJECT . DS . 'vendor/autoload.php';
+    include DIR_APP . DS . 'vendor/autoload.php';
   }else{
     echo 'Bootstrap loading error: '.error_get_last();
   }
