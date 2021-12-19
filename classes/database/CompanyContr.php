@@ -17,10 +17,15 @@
                           company.name,
                           company.cnpj,
                           company.show,
-                          adress.*
+                          adress.*,
+                          tmp.users AS users
 
                   FROM company LEFT JOIN adress
-                  ON company.id_adress = adress.id_adress
+                  ON company.id_adress = adress.id_adress,
+                  ( SELECT GROUP_CONCAT(" ",user.name) AS users
+                    FROM user INNER JOIN user_company
+                    ON user.id_user = user_company.id_user
+                    WHERE user_company.id_company = "'.$id_company.'") AS tmp
 
                   WHERE company.id_company = "'.$id_company.'"';
 
@@ -42,14 +47,23 @@
 
     public function getAllCompanies(){
 
-      $query = '  SELECT  company.id_company,
-                          company.name,
-                          company.cnpj,
-                          company.show,
-                          adress.*
+      $query = ' SELECT  company.id_company,
+                        company.name,
+                        company.cnpj,
+                        company.show,
+                        adress.*,
+                        tmp.users AS users
 
                   FROM company LEFT JOIN adress
                   ON company.id_adress = adress.id_adress
+
+                  LEFT JOIN
+                  ( SELECT user_company.id_company,
+                                                GROUP_CONCAT(" ",user.name) AS users
+                                          FROM user INNER JOIN user_company
+                                          ON user.id_user = user_company.id_user
+                                          GROUP BY user_company.id_company) AS tmp
+                  ON company.id_company = tmp.id_company
 
                   WHERE company.show = 1';
 
