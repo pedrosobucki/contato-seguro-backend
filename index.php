@@ -13,7 +13,22 @@
 
   $app = AppFactory::create();
 
-  $app->addErrorMiddleware(true, true, false);
+  //$app->addErrorMiddleware(true, true, false);
+  
+  unset($app->getContainer()['errorHandler']);
+  unset($app->getContainer()['phpErrorHandler']);
+
+  $app->options('/{routes:.+}', function ($request, $response, $args) {
+      return $response;
+  });
+
+  $app->add(function ($request, $handler) {
+      $response = $handler->handle($request);
+      return $response
+              ->withHeader('Access-Control-Allow-Origin', '*')
+              ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+              ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  });
 
   $app->get('/api', function(Request $request, Response $response, array $args){
     $response->getBody()->write("Hello World");
