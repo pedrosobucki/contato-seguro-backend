@@ -17,6 +17,13 @@
 
   $app->addErrorMiddleware(true, true, false);
 
+  unset($app->getContainer()['errorHandler']);
+  unset($app->getContainer()['phpErrorHandler']);
+
+  $app->options('/{routes:.+}', function ($request, $response, $args) {
+      return $response;
+  });
+
 
   $app->get('/api/user',function(Request $request, Response $response, array $args){
 
@@ -115,6 +122,28 @@
     $response->getBody()->write(json_encode($companies));
     return $response->withStatus(200)->withHeader('Content-type', 'application/json');
   });
+  
+
+  $app->get('/api/company/{id}', function(Request $request, Response $response, array $args){
+
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $companyCtr = new CompanyContr();
+        $data = $companyCtr->getCompany($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+    
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+
+  });
+
+  
 
   try{
     @$app->run();
