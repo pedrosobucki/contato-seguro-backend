@@ -5,6 +5,8 @@
   include __DIR__.'/inc/inc.codes.php';
 
   require_once 'classes/database/UserContr.php';
+  require_once 'classes/database/CompanyContr.php';
+  require_once 'classes/database/AdressContr.php';
   require_once 'classes/util/ValidateArgs.php';
   
   use Psr\Http\Message\ResponseInterface as Response;
@@ -30,9 +32,11 @@
               ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   });
 
-  $app->get('/api', function(Request $request, Response $response, array $args){
-    $response->getBody()->write("Hello World");
-    return $response;
+  unset($app->getContainer()['errorHandler']);
+  unset($app->getContainer()['phpErrorHandler']);
+
+  $app->options('/{routes:.+}', function ($request, $response, $args) {
+      return $response;
   });
 
 
@@ -123,6 +127,38 @@
     $response->getBody()->write(json_encode($data['data']));
     return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
   });
+
+
+  $app->get('/api/company',function(Request $request, Response $response, array $args){
+
+    $companyCtr = new CompanyContr();
+    $companies = $companyCtr->getAllCompanies();
+
+    $response->getBody()->write(json_encode($companies));
+    return $response->withStatus(200)->withHeader('Content-type', 'application/json');
+  });
+  
+
+  $app->get('/api/company/{id}', function(Request $request, Response $response, array $args){
+
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $companyCtr = new CompanyContr();
+        $data = $companyCtr->getCompany($args['id']);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+    
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+
+  });
+
+  
 
   try{
     @$app->run();
