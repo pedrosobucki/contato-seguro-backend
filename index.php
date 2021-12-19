@@ -5,6 +5,8 @@
   include __DIR__.'/inc/inc.codes.php';
 
   require_once 'classes/database/UserContr.php';
+  require_once 'classes/database/CompanyContr.php';
+  require_once 'classes/database/AdressContr.php';
   require_once 'classes/util/ValidateArgs.php';
   
   use Psr\Http\Message\ResponseInterface as Response;
@@ -14,11 +16,6 @@
   $app = AppFactory::create();
 
   $app->addErrorMiddleware(true, true, false);
-
-  $app->get('/api', function(Request $request, Response $response, array $args){
-    $response->getBody()->write("Hello World");
-    return $response;
-  });
 
 
   $app->get('/api/user',function(Request $request, Response $response, array $args){
@@ -107,6 +104,16 @@
 
     $response->getBody()->write(json_encode($data['data']));
     return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+
+  $app->get('/api/company',function(Request $request, Response $response, array $args){
+
+    $companyCtr = new CompanyContr();
+    $companies = $companyCtr->getAllCompanies();
+
+    $response->getBody()->write(json_encode($companies));
+    return $response->withStatus(200)->withHeader('Content-type', 'application/json');
   });
 
   try{
