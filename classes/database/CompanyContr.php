@@ -14,6 +14,7 @@
     public function getCompany($id_company){
 
       $query = '  SELECT  company.id_company,
+                          company.name,
                           company.cnpj,
                           company.show,
                           adress.*
@@ -42,6 +43,7 @@
     public function getAllCompanies(){
 
       $query = '  SELECT  company.id_company,
+                          company.name,
                           company.cnpj,
                           company.show,
                           adress.*

@@ -20,10 +20,6 @@
   unset($app->getContainer()['errorHandler']);
   unset($app->getContainer()['phpErrorHandler']);
 
-  $app->options('/{routes:.+}', function ($request, $response, $args) {
-      return $response;
-  });
-
   $app->add(function ($request, $handler) {
       $response = $handler->handle($request);
       return $response
@@ -31,9 +27,6 @@
               ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
               ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   });
-
-  unset($app->getContainer()['errorHandler']);
-  unset($app->getContainer()['phpErrorHandler']);
 
   $app->options('/{routes:.+}', function ($request, $response, $args) {
       return $response;
@@ -73,9 +66,7 @@
   $app->post('/api/user/create', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    if(ValidateArgs::validateUserBody($body, ["name", "email"])){
-      echo 'data valid!';
-      die;
+    if(ValidateArgs::validateBody('user', $body, ["name", "email"])){
 
       try{
         $userCtr = new UserContr();
@@ -95,7 +86,7 @@
   $app->patch('/api/user/{id}/update', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    if(ValidateArgs::validateId($args['id']) && ValidateArgs::validateUserBody($body)){
+    if(ValidateArgs::validateId($args['id']) && ValidateArgs::validateBody('user', $body)){
       try{
         $userCtr = new UserContr();
         $data = $userCtr->updateUser($args['id'], $body);
@@ -151,11 +142,31 @@
     }else{
       $data = BAD_REQUEST;
     }
-    
 
     $response->getBody()->write(json_encode($data['data']));
     return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
 
+  });
+
+  $app->post('/api/company/create', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    if(ValidateArgs::validateBody('company', $body, ["name", "cnpj", "cep", "country", "state", "city", "street", "number", "district"])){
+      echo 'data valid!';
+      die;
+
+      try{
+        $userCtr = new UserContr();
+        $data = $userCtr->insertUser($body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
   });
 
   
