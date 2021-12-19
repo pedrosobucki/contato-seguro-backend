@@ -32,6 +32,22 @@
 
     }
 
+    public function insertUserCompanies($id_user, $companies){
+
+      foreach($companies as $key => $id_company){
+        $values[] = '("'.$id_user.'", "'.$id_company.'")';
+      }
+
+      $query = 'INSERT INTO user_company (id_user, id_company)
+                VALUES '.implode(',', $values).'';
+
+      $stmt = $this->mysql->prepare($query);
+      $stmt->execute();
+
+      return ($stmt->rowCount() > 0) ? true : false;
+
+    }
+
     public function getUser($id_user){
 
       $query = '  SELECT  user.*,
