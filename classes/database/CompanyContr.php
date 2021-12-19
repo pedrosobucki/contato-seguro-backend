@@ -106,13 +106,19 @@
     public function deleteCompany($id_company){
 
       $query = 'UPDATE company
-                SET show = 0
+                SET company.show = 0
                 WHERE company.id_company = "'.$id_company.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return $stmt->rowCount();
+      if($stmt->rowCount() > 0){
+        $response = DELETE_SUCCEDED;
+      }else{
+        $response = DELETE_FAILED;
+      }
+
+      return $response;
 
     }
 
