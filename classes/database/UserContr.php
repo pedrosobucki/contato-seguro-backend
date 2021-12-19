@@ -35,7 +35,10 @@
     public function getUser($id_user){
 
       $query = '  SELECT  user.*,
-                          tmp.companies AS companies
+                          IF(LENGTH(tmp.companies)>14, 
+													  CONCAT(SUBSTRING(tmp.companies, 1,14	), "..."),
+														tmp.companies
+														) AS companies
 
                   FROM    user,
                           ( SELECT GROUP_CONCAT(" ",company.name) AS companies
@@ -64,7 +67,10 @@
     public function getAllUsers(){
 
       $query = '  SELECT  user.*,
-                          tmp.companies AS companies
+                          IF(LENGTH(tmp.companies)>14, 
+													  CONCAT(SUBSTRING(tmp.companies, 1,14	), "..."),
+														tmp.companies
+														) AS companies
 
                   FROM    user LEFT JOIN  ( SELECT user_company.id_user,
                                                   GROUP_CONCAT(" ",company.name) AS companies

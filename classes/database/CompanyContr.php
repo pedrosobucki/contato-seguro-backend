@@ -18,7 +18,10 @@
                           company.cnpj,
                           company.show,
                           adress.*,
-                          tmp.users AS users
+                          IF(LENGTH(tmp.users)>14, 
+													  CONCAT(SUBSTRING(tmp.users, 1,14	), "..."),
+														tmp.users
+														) AS users
 
                   FROM company LEFT JOIN adress
                   ON company.id_adress = adress.id_adress,
@@ -52,7 +55,10 @@
                         company.cnpj,
                         company.show,
                         adress.*,
-                        tmp.users AS users
+                        IF(LENGTH(tmp.users)>14, 
+													  CONCAT(SUBSTRING(tmp.users, 1,14	), "..."),
+														tmp.users
+														) AS users
 
                   FROM company LEFT JOIN adress
                   ON company.id_adress = adress.id_adress
