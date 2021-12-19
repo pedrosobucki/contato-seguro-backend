@@ -2,7 +2,8 @@
 
   const ALLOWED_PARAMS = array(
     "user" => ["name", "email", "telephone", "birth_date", "birth_city"],
-    "company" => ["name", "cnpj", "cep", "country", "state", "city", "street", "number", "district", "additional"]
+    "company" => ["name", "cnpj", "adress"],
+    "adress" => ["cep", "country", "state", "city", "street", "number", "district", "additional"]
   );
 
   class ValidateArgs{
@@ -21,7 +22,7 @@
 
     public static function validateBody($type, $body, $obligatoryParams = null){
 
-      if(array_intersect($obligatoryParams, array_keys($body)) || $obligatoryParams === null){
+      if(sizeof(array_intersect($obligatoryParams, array_keys($body))) === sizeof($obligatoryParams) || $obligatoryParams === null){
 
         foreach($body as $key => $value){
           if(!in_array($key, ALLOWED_PARAMS[$type])) return false;

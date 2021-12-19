@@ -59,7 +59,7 @@
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function insertCompany($companyData, $adressData){
+    public function insertCompany($companyData){
 
       $query = 'INSERT INTO company('.implode(', ', array_keys($companyData)).')
                 VALUES ("'.implode('", "', $companyData).'")';
@@ -67,7 +67,16 @@
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return ($stmt->rowCount() > 0) ? $this->mysql->lastInsertId() : false;
+      if($stmt->rowCount() > 0){
+        $response = array(
+                          "status" => 201,
+                          "data" => array("id" => $this->mysql->lastInsertId())
+                        );
+      }else{
+        $response = NO_CONTENT;
+      }
+
+      return $response;
       
     }
 

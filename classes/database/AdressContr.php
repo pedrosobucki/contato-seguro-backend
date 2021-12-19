@@ -2,7 +2,7 @@
 
   require_once 'Mysql.php';
 
-  class AndressContr{
+  class AdressContr{
 
     private $mysql;
 

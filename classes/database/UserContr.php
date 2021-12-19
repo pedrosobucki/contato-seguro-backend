@@ -22,7 +22,7 @@
       if($stmt->rowCount() > 0){
         $response = array(
                           "status" => 201,
-                          "data" => array("id_user" => $this->mysql->lastInsertId())
+                          "data" => array("id" => $this->mysql->lastInsertId())
                         );
       }else{
         $response = NO_CONTENT;

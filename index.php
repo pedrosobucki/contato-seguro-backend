@@ -151,13 +151,18 @@
   $app->post('/api/company/create', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    if(ValidateArgs::validateBody('company', $body, ["name", "cnpj", "cep", "country", "state", "city", "street", "number", "district"])){
-      echo 'data valid!';
-      die;
+    if(ValidateArgs::validateBody('company', $body, ["name", "cnpj", "adress"]) && ValidateArgs::validateBody('adress', $body["adress"], ["cep", "country", "state", "city", "street", "number", "district"])){
+
+      // echo 'valid params!';
+      // die;
 
       try{
-        $userCtr = new UserContr();
-        $data = $userCtr->insertUser($body);
+        $adressCtr = new AdressContr();
+        $body['id_adress'] = $adressCtr->insertAdress($body["adress"]);
+        unset($body['adress']);
+
+        $companyCtr = new CompanyContr();
+        $data = $companyCtr->insertCompany($body);
       }catch(Exception $e){
         $data = ERROR_GENERIC;
       }
