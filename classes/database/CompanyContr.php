@@ -87,13 +87,19 @@
       }
 
       $query = 'UPDATE company
-                SET '.implode(', ', $data).'
+                SET '.implode(', ', $values).'
                 WHERE company.id_company = "'.$id_company.'"';
 
       $stmt = $this->mysql->prepare($query);
       $stmt->execute();
 
-      return ($stmt->rowCount() > 0) ? true : false;
+      if($stmt->rowCount() > 0){
+        $response = UPDATE_SUCCEDED;
+      }else{
+        $response = UPDATE_FAILED;
+      }
+
+      return $response;
 
     }
 

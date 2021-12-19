@@ -47,7 +47,7 @@
       
     }
 
-    public function updateCompany($id_adress, $data){
+    public function updateAdress($id_adress, $data){
 
       foreach ($data as $key => $value) {
         $values[] = $key.' = "'.$value.'"';

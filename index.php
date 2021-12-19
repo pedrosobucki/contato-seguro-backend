@@ -15,7 +15,7 @@
 
   $app = AppFactory::create();
 
-  //$app->addErrorMiddleware(true, true, false);
+  $app->addErrorMiddleware(true, true, true);
   
   unset($app->getContainer()['errorHandler']);
   unset($app->getContainer()['phpErrorHandler']);
@@ -153,9 +153,6 @@
     
     if(ValidateArgs::validateBody('company', $body, ["name", "cnpj", "adress"]) && ValidateArgs::validateBody('adress', $body["adress"], ["cep", "country", "state", "city", "street", "number", "district"])){
 
-      // echo 'valid params!';
-      // die;
-
       try{
         $adressCtr = new AdressContr();
         $body['id_adress'] = $adressCtr->insertAdress($body["adress"]);
@@ -163,6 +160,47 @@
 
         $companyCtr = new CompanyContr();
         $data = $companyCtr->insertCompany($body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+  $app->patch('/api/company/{id}/update', function(Request $request, Response $response, array $args){
+    $body = json_decode($request->getBody()->getContents(), true);
+    
+    if(ValidateArgs::validateId($args['id']) && ValidateArgs::validateBody('company', $body) && ValidateArgs::validateBody('adress', $body["adress"])){
+
+      try{
+        $adressCtr = new AdressContr();
+        $adressCtr->updateAdress($body["id_adress"], $body["adress"]);
+        unset($body['adress']);
+
+        $companyCtr = new CompanyContr();
+        $data = $companyCtr->updateCompany($args['id'], $body);
+      }catch(Exception $e){
+        $data = ERROR_GENERIC;
+      }
+    }else{
+      $data = BAD_REQUEST;
+    }
+
+    $response->getBody()->write(json_encode($data['data']));
+    return $response->withStatus($data['status'])->withHeader('Content-type', 'application/json');
+  });
+
+
+  $app->delete('/api/company/{id}/delete', function(Request $request, Response $response, array $args){
+    
+    if(ValidateArgs::validateId($args['id'])){
+      try{
+        $companyCtr = new CompanyContr();
+        $data = $companyCtr->deleteCompany($args['id']);
       }catch(Exception $e){
         $data = ERROR_GENERIC;
       }
