@@ -65,5 +65,5 @@ Aqui na Contato Seguro, utilizamos __Docker__ nos nossos ambientes, então será
 - Outras entidades e relacionamento entre entidades. Por exemplo: uma entidade `Relatos` ou `Atividades` que tenha `Usuários` e/ou `Empresas` vinculadas.
 - Separação em commits, especialmente com boas mensagens de identificação.
 
-# Resposta do participante
-_Responda aqui quais foram suas dificuldades e explique a sua solução_
+## RODANDO O SERVIDOR
+- Após rodar o comnado "composer install", o servidor deve ser iniciado na porta 8080 com o comando "php -S localhost:8080"
