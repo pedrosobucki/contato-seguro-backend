@@ -66,4 +66,11 @@ Aqui na Contato Seguro, utilizamos __Docker__ nos nossos ambientes, então será
 - Separação em commits, especialmente com boas mensagens de identificação.
 
 ## RODANDO O SERVIDOR
+- O banco de dados deve estar rodando no servidor com a porta 3306
+    CREDENCIAIS: 
+        - host: localhost;
+        - port: 3306;
+        - user: root;
+        - password: `SEM SENHA`
+
 - Após rodar o comnado "composer install", o servidor deve ser iniciado na porta 8080 com o comando "php -S localhost:8080"
