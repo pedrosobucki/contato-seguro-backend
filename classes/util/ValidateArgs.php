@@ -1,7 +1,7 @@
 <?php
 
   const ALLOWED_PARAMS = array(
-    "user" => ["name", "email", "telephone", "birth_date", "birth_city"],
+    "user" => ["name", "email", "telephone", "birth_date", "birth_city", "companies"],
     "company" => ["name", "cnpj", "id_adress", "adress"],
     "adress" => ["cep", "country", "state", "city", "street", "number", "district", "additional"]
   );

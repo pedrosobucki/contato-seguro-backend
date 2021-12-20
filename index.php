@@ -66,11 +66,17 @@
   $app->post('/api/user/create', function(Request $request, Response $response, array $args){
     $body = json_decode($request->getBody()->getContents(), true);
     
-    if(ValidateArgs::validateBody('user', $body, ["name", "email"])){
+    if(ValidateArgs::validateBody('user', $body, ["name", "email", "companies"])){
+
+      $companies = $body['companies'];
+      unset($body['companies']);
 
       try{
         $userCtr = new UserContr();
         $data = $userCtr->insertUser($body);
+
+        $userCtr->insertUserCompanies($data['data']['id'], $companies);
+        $data = $userCtr->getUser($data['data']['id']);
       }catch(Exception $e){
         $data = ERROR_GENERIC;
       }
